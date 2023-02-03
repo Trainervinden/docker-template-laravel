@@ -20,6 +20,7 @@ services:
       - redis
       - mysql
       - scheduler
+#      - supervisor
     networks:
       - laravel
 
@@ -112,3 +113,13 @@ services:
       - ./src:/var/www/html
     networks:
       - laravel
+#
+#  supervisor:
+#    build:
+#      context: .
+#      dockerfile: dockerfiles/supervisor.dockerfile
+#    container_name: supervisor
+#    volumes:
+#      - ./src:/var/www/html
+#    networks:
+#      - laravel

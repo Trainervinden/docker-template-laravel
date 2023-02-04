@@ -1,5 +1,7 @@
 FROM php:8.2-fpm-alpine
 
+RUN apk update && apk add oniguruma-dev && apk add libxml2-dev
+
 ARG UID
 
 ARG GID
@@ -25,7 +27,7 @@ RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.con
 RUN sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf
 RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install bcmath ctype mbstring fileinfo pdo pdo_mysql dom pcntl
 
 USER laravel
 

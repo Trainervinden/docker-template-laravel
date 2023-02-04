@@ -6,7 +6,6 @@ RUN apk update && apk add --no-cache supervisor
 
 RUN mkdir -p "/etc/supervisor/logs"
 
-#ADD configs/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-ADD configs/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY dockerfiles/configs/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
 CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]

@@ -11,16 +11,17 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+        - WEBROOT=${WEBROOT}
     ports:
-      - "80:80"
+      - ${NGINXPORTS}
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:${WEBROOT}:delegated
     depends_on:
       - php
       - redis
       - mysql
       - scheduler
-#      - supervisor
+      - supervisor
     networks:
       - laravel
 
@@ -29,7 +30,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "3306:3306"
+      - ${MYSQLPORTS}
     environment:
       MYSQL_DATABASE: homestead
       MYSQL_USER: homestead
@@ -47,10 +48,11 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+        - WEBROOT=${WEBROOT}
     ports:
-      - "9000:9000"
+      - ${PHPFPMPORTS}
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:${WEBROOT}:delegated
     networks:
       - laravel
 
@@ -58,7 +60,7 @@ services:
     image: redis:alpine
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - ${REDISPORTS}
     networks:
       - laravel
 
@@ -69,8 +71,9 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+        - WEBROOT=${WEBROOT}
     volumes:
-      - ./src:/var/www/html
+      - ./src:${WEBROOT}
     depends_on:
       - php
     entrypoint: [ 'composer', '--ignore-platform-reqs' ]
@@ -80,12 +83,12 @@ services:
   npm:
     image: node:current-alpine
     volumes:
-      - ./src:/var/www/html
+      - ./src:${WEBROOT}
     ports:
+      - ${VITEPORTS}
       - "3000:3000"
       - "3001:3001"
-      - "5173:5173"
-    working_dir: /var/www/html
+    working_dir: ${WEBROOT}
     entrypoint: [ 'npm' ]
     networks:
       - laravel
@@ -97,11 +100,12 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+        - WEBROOT=${WEBROOT}
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:${WEBROOT}:delegated
     depends_on:
       - mysql
-    entrypoint: [ 'php', '/var/www/html/artisan' ]
+    entrypoint: [ 'php', '${WEBROOT}/artisan' ]
     networks:
       - laravel
 
@@ -110,16 +114,19 @@ services:
       context: .
       dockerfile: dockerfiles/cron.dockerfile
     volumes:
-      - ./src:/var/www/html
+      - ./src:${WEBROOT}
     networks:
       - laravel
-#
-#  supervisor:
-#    build:
-#      context: .
-#      dockerfile: dockerfiles/supervisor.dockerfile
-#    container_name: supervisor
-#    volumes:
-#      - ./src:/var/www/html
-#    networks:
-#      - laravel
+
+  supervisor:
+    build:
+      context: .
+      dockerfile: dockerfiles/supervisor.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    container_name: supervisor
+    volumes:
+      - ./src:${WEBROOT}
+    networks:
+      - laravel

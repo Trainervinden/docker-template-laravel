@@ -1,14 +1,17 @@
 FROM php:8.2-fpm-alpine
 
 ARG UID
+
 ARG GID
+
+ARG WEBROOT=/var/www/html
 
 ENV UID=${UID}
 ENV GID=${GID}
 
-RUN mkdir -p /var/www/html
+RUN mkdir -p $WEBROOT
 
-WORKDIR /var/www/html
+WORKDIR $WEBROOT
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

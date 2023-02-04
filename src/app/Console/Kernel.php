@@ -19,6 +19,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             TestJob::dispatch();
         })->everyMinute();
+
+        $schedule->call(function () {
+            TestJob::dispatch()->onQueue('long');
+        })->everyTwoMinutes();
     }
 
     /**

@@ -11,8 +11,10 @@ RUN delgroup dialout
 
 RUN addgroup -g ${GID} --system laravel
 RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
-RUN sed -i "s/user  nginx/user laravel/g" /etc/nginx/nginx.conf
+RUN sed -i "s/user nginx/user laravel/g" /etc/nginx/nginx.conf
 
 ADD configs/nginx/default.conf /etc/nginx/conf.d/
 
-RUN mkdir -p /var/www/html
+ARG WEBROOT=/var/www/html
+
+RUN mkdir -p $WEBROOT

@@ -1,4 +1,32 @@
-For vite: docker-compose run --rm --service-ports npm run dev
+cp .env.example .env in the root of the project and change the database details here and also in your own app.
+
+For vite: docker-compose run --rm --service-ports npm run dev -- --host
+
+Aliases: nano .bashrc
+
+- alias dc='docker-compose'
+- alias dcu='dc up app -d'
+- alias dcd='dc down'
+- alias art='dc run --rm artisan'
+- alias artm='art migrate'
+- alias np='dc run --rm npm'
+- alias npi='np install'
+- alias npb='np --service-ports run build
+- alias npd='np --service-ports npm run dev -- --host'
+- alias com='dc run --rm composer'
+
+Examples:
+
+- _dcu_ (start the app containers detached)
+- _dcd_ (stop all containers)
+- _dc up -d_ (start all containers detached)
+- _npi_ (npm install in docker)
+- _artm_ (migrate database)
+- _npd_ (npm run dev)
+- _npb_ (npm run build)
+- _art <anything>_ (run any artisan command)
+- _np <anything>_ (run any npm command)
+- _com <anything>_ (run any composer command)
 
 # docker-compose-laravel
 A pretty simplified Docker Compose workflow that sets up a LEMP network of containers for local Laravel development. You can view the full article that inspired this repo [here](https://dev.to/aschmelyun/the-beauty-of-docker-for-local-laravel-development-13c0).
@@ -11,7 +39,7 @@ Next, navigate in your terminal to the directory you cloned this, and spin up th
 
 After that completes, follow the steps from the [src/README.md](src/README.md) file to get your Laravel project added in (or create a new blank one).
 
-**Note**: Your MySQL database host name should be `mysql`, **not** `localhost`. The username and database should both be `homestead` with a password of `secret`. 
+**Note**: Your MySQL database host name should be `mysql`, **not** `localhost`. The username and database should both be `homestead` with a password of `secret`.
 
 Bringing up the Docker Compose network with `app` instead of just using `up`, ensures that only our site's containers are brought up at the start, instead of all of the command containers as well. The following are built for our web server, with their exposed ports detailed:
 
@@ -19,7 +47,7 @@ Bringing up the Docker Compose network with `app` instead of just using `up`, en
 - **mysql** - `:3306`
 - **php** - `:9000`
 - **redis** - `:6379`
-- **mailhog** - `:8025` 
+- **mailhog** - `:8025`
 
 Three additional containers are included that handle Composer, NPM, and Artisan commands *without* having to have these platforms installed on your local computer. Use the following command examples from your project root, modifying them to fit your particular use case.
 
@@ -68,8 +96,8 @@ This configuration should be able to compile assets with both [laravel mix](http
 
 ```json
 "scripts": {
-  "dev": "vite --host 0.0.0.0",
-  "build": "vite build"
+"dev": "vite --host 0.0.0.0",
+"build": "vite build"
 },
 ```
 
